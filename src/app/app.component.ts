@@ -1,0 +1,59 @@
+import {Component, OnInit} from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import {D3ForceChartComponent} from "./d3ForceChart/d3ForceChart.component";
+import {Company} from "./d3ForceChart/d3ForceDataTypes";
+import * as d3 from 'd3';
+@Component({
+  selector: 'app-root',
+  imports: [D3ForceChartComponent],
+
+  template: `
+    <main class="fixed inset-0 flex flex-col"> 
+      <header class="h-[90px] min-h-[90px] flex-shrink-0">
+        <div id="floatingWebLink"><a href="https://www.bmdata.co.uk">www.bmdata.co.uk</a></div>
+        <p>
+          <span class="block md:hidden">A simple <strong>Company Structure app</strong></span>
+          <span class="hidden md:block">A simple <strong>Company Structure app</strong> to demonstrate that I can embed D3.js charts in Angular</span>
+        </p>
+       <br>Size By: <select id="radiusSelect">
+        <option value="staff">employee count</option>
+        <option value="salary">salary</option>
+        <option value="yearsExperience">years of service</option>
+      </select>
+      </header>
+      <section class="h-[calc(100vh-90px)]">
+        <app-d3ForceChart [graphData]="dataFromParent" [radiusVar]="radiusVar"></app-d3ForceChart>
+      </section>
+    </main>
+  `,
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  loading = true;
+  error?: string;
+
+  dataFromParent: Company | null = null;
+  radiusVar: "staff" | "salary" | "yearsExperience" = "staff";
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit() {
+    this.http.get<Company>('assets/data/claudeCompany.json').subscribe({
+      next: data => {
+        this.loading = false;
+        this.dataFromParent = data;
+      },
+      error: err => {
+        this.error = 'Failed to load data';
+        this.loading = false;
+        console.error(err);
+      }
+    });
+
+    d3.select("#radiusSelect")
+        .on("change",(event) => {
+          this.radiusVar = event.currentTarget.value;
+        })
+  }
+
+}
