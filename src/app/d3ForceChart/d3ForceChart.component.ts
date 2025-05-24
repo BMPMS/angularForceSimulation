@@ -17,7 +17,7 @@ import {D3DragEvent} from "d3";
       </svg>
     </div>
   `,
-  styles: ``
+    styleUrls: ['./d3ForceChart.component.css']
 })
 export class D3ForceChartComponent implements OnChanges {
   @Input() graphData: Company | null = null;
@@ -184,7 +184,9 @@ export class D3ForceChartComponent implements OnChanges {
           .force("link", d3.forceLink<ForceHierarchyNode<Company>,ForceHierarchyLink>().id((d) => d.data.name))
           .force("charge",d3.forceManyBody().strength(-1000))
           .force("radial", d3.forceRadial<ForceHierarchyNode<Company>>((d) => d.depth * (width/3), width / 2, height / 2).strength(0.4))
-      // so there are no errors fetching as d3 manipulates the data
+          .force("collide", d3.forceCollide<ForceHierarchyNode<Company>>().radius((d) => radiusScale(d.data[radiusVar]) * 2).strength(0.6))
+
+        // so there are no errors fetching as d3 manipulates the data
       const getLinkId = (link: ForceHierarchyLink, linkType: "source" | "target") =>  link[linkType].data.name;
 
 
@@ -243,12 +245,27 @@ export class D3ForceChartComponent implements OnChanges {
 
         nodesGroup
             .attr("cursor","pointer")
+            .on("mousemove", (event,d) => {
+                let totalText = d.children || d._children ? "Total " : "";
+                let tooltipText = `<strong>${d.data.name}</strong><br>`;
+                tooltipText += `${totalText}Salary: $${d3.format(",")(d.data.salary)}<br>`;
+                tooltipText += `${totalText}Years Experience: ${d.data.yearsExperience}<br>`;
+                if(d.children || d._children){
+                    tooltipText += `Total Staff: ${d.data.staff}`;
+                }
+                d3.select(`#${tooltipId}`)
+                    .style("visibility", "visible")
+                    .style("left",`${event.x + 10}px`)
+                    .style("top", `${event.y}px`)
+                    .html(tooltipText);
+            })
+            .on("mouseout",(event,d) => {
+                d3.select(`#${tooltipId}`)
+                    .style("visibility", "hidden");
+
+            })
             .on("click", (event, d) => {
               // populate tooltip
-              d3.select(`#${tooltipId}`)
-                  .style("visibility", "visible")
-                  .html("hello I'm a tooltip");
-              // .children === visible, .data._children === hidden
               // flip visibility depending on status and set expanded to true if expanding
               if(!d.children  && d._children){
                 d.children = d._children;
@@ -366,8 +383,8 @@ export class D3ForceChartComponent implements OnChanges {
           nodesGroup
               .attr("transform", (d) => `translate(${d.x},${d.y})`);
           tickCount += 1;
-          if(tickCount === 25){
-            // zoom after 25 ticks so nodes pretty much in place
+          if(tickCount === 50){
+            // zoom after 50 ticks so nodes pretty much in place
             this.zoomToBounds(nodes, baseSvg,width,height,zoom);
           }
         })
