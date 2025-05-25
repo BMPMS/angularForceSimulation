@@ -1,0 +1,381 @@
+{
+    "name": "Acme Widget Corporation",
+    "staff": 28,
+    "type": "company",
+    "children": [
+      {
+        "name": "Executive",
+        "type": "department",
+        "children": [
+          {
+            "name": "CEO Office",
+            "type": "subDepartment",
+            "staff": 2,
+            "children": [
+              {
+                "id": 1,
+                "name": "Margaret Thompson",
+                "title": "Chief Executive Officer",
+                "salary": 250000,
+                "yearsExperience": 15,
+                "type": "employee",
+                "staff": 1
+              },
+              {
+                "id": 2,
+                "name": "Sarah Chen",
+                "title": "Executive Assistant",
+                "salary": 65000,
+                "yearsExperience": 8,
+                "type": "employee",
+                "staff": 1
+              }
+            ]
+          },
+          {
+            "name": "Strategic Planning",
+            "type": "subDepartment",
+            "children": [
+              {
+                "id": 3,
+                "name": "David Rodriguez",
+                "title": "VP of Strategy",
+                "salary": 180000,
+                "yearsExperience": 12,
+                "type": "employee",
+                "staff": 1
+              },
+              {
+                "id": 4,
+                "name": "Lisa Park",
+                "title": "Strategy Analyst",
+                "salary": 75000,
+                "yearsExperience": 3,
+                "type": "employee",
+                "staff": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Engineering",
+        "type": "department",
+        "children": [
+          {
+            "name": "Software Development",
+            "type": "subDepartment",
+            "staff": 4,
+            "children": [
+              {
+                "id": 5,
+                "name": "Robert Kim",
+                "title": "VP of Engineering",
+                "salary": 200000,
+                "yearsExperience": 14,
+                "type": "employee",
+                "staff": 1
+              },
+              {
+                "id": 6,
+                "name": "Alice Johnson",
+                "title": "Senior Software Engineer",
+                "salary": 120000,
+                "yearsExperience": 7,
+                "type": "employee",
+                "staff": 1
+              },
+              {
+                "id": 7,
+                "name": "Mark Williams",
+                "title": "Software Engineer",
+                "salary": 95000,
+                "yearsExperience": 4,
+                "type": "employee",
+                "staff": 1
+              },
+              {
+                "id": 8,
+                "name": "Emily Davis",
+                "title": "Junior Developer",
+                "salary": 70000,
+                "yearsExperience": 1,
+                "type": "employee",
+                "staff": 1
+              }
+            ]
+          },
+          {
+            "name": "Quality Assurance",
+            "type": "subDepartment",
+            "children": [
+              {
+                "id": 9,
+                "name": "Michael Brown",
+                "title": "QA Manager",
+                "salary": 90000,
+                "yearsExperience": 9,
+                "type": "employee",
+                "staff": 1
+              },
+              {
+                "id": 10,
+                "name": "Jennifer Martinez",
+                "title": "QA Engineer",
+                "salary": 70000,
+                "yearsExperience": 5,
+                "type": "employee",
+                "staff": 1
+              }
+            ]
+          },
+          {
+            "name": "DevOps",
+            "type": "subDepartment",
+            "children": [
+              {
+                "id": 11,
+                "name": "Tom Wilson",
+                "title": "DevOps Engineer",
+                "salary": 110000,
+                "yearsExperience": 6,
+                "type": "employee",
+                "staff": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Sales & Marketing",
+        "type": "department",
+        "children": [
+          {
+            "name": "Sales",
+            "type": "subDepartment",
+            "staff": 3,
+            "children": [
+              {
+                "id": 12,
+                "name": "Amanda Foster",
+                "title": "VP of Sales",
+                "salary": 175000,
+                "yearsExperience": 11,
+                "type": "employee",
+                "staff": 1
+              },
+              {
+                "id": 13,
+                "name": "James Miller",
+                "title": "Senior Sales Rep",
+                "salary": 85000,
+                "yearsExperience": 6,
+                "type": "employee",
+                "staff": 1
+              },
+              {
+                "id": 14,
+                "name": "Rachel Green",
+                "title": "Sales Rep",
+                "salary": 60000,
+                "yearsExperience": 2,
+                "type": "employee",
+                "staff": 1
+              }
+            ]
+          },
+          {
+            "name": "Marketing",
+            "type": "subDepartment",
+            "children": [
+              {
+                "id": 15,
+                "name": "Kevin Lee",
+                "title": "Marketing Manager",
+                "salary": 95000,
+                "yearsExperience": 8,
+                "type": "employee",
+                "staff": 1
+              },
+              {
+                "id": 16,
+                "name": "Jessica Taylor",
+                "title": "Content Specialist",
+                "salary": 55000,
+                "yearsExperience": 3,
+                "type": "employee",
+                "staff": 1
+              },
+              {
+                "id": 17,
+                "name": "Ryan Murphy",
+                "title": "Social Media Coordinator",
+                "salary": 45000,
+                "yearsExperience": 2,
+                "type": "employee",
+                "staff": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Finance",
+        "type": "department",
+        "children": [
+          {
+            "name": "Accounting",
+            "type": "subDepartment",
+            "staff": 3,
+            "children": [
+              {
+                "id": 18,
+                "name": "Patricia Adams",
+                "title": "CFO",
+                "salary": 190000,
+                "yearsExperience": 13,
+                "type": "employee",
+                "staff": 1
+              },
+              {
+                "id": 19,
+                "name": "Steven Clark",
+                "title": "Senior Accountant",
+                "salary": 70000,
+                "yearsExperience": 7,
+                "type": "employee",
+                "staff": 1
+              },
+              {
+                "id": 20,
+                "name": "Maria Garcia",
+                "title": "Accounts Payable Clerk",
+                "salary": 45000,
+                "yearsExperience": 4,
+                "type": "employee",
+                "staff": 1
+              }
+            ]
+          },
+          {
+            "name": "Financial Planning",
+            "type": "subDepartment",
+            "children": [
+              {
+                "id": 21,
+                "name": "Daniel Wright",
+                "title": "Financial Analyst",
+                "salary": 75000,
+                "yearsExperience": 5,
+                "type": "employee",
+                "staff": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Human Resources",
+        "type": "department",
+        "children": [
+          {
+            "name": "Talent Acquisition",
+            "type": "subDepartment",
+            "staff": 2,
+            "children": [
+              {
+                "id": 22,
+                "name": "Catherine Moore",
+                "title": "VP of Human Resources",
+                "salary": 140000,
+                "yearsExperience": 10,
+                "type": "employee",
+                "staff": 1
+              },
+              {
+                "id": 23,
+                "name": "Andrew Nelson",
+                "title": "Recruiter",
+                "salary": 60000,
+                "yearsExperience": 4,
+                "type": "employee",
+                "staff": 1
+              }
+            ]
+          },
+          {
+            "name": "Employee Relations",
+            "type": "subDepartment",
+            "staff": 1,
+            "children": [
+              {
+                "id": 24,
+                "name": "Laura Phillips",
+                "title": "HR Generalist",
+                "salary": 65000,
+                "yearsExperience": 6,
+                "type": "employee",
+                "staff": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Operations",
+        "type": "department",
+        "children": [
+          {
+            "name": "Facilities",
+            "type": "subDepartment",
+            "staff": 2,
+            "children": [
+              {
+                "id": 25,
+                "name": "Christopher White",
+                "title": "Operations Manager",
+                "salary": 95000,
+                "yearsExperience": 9,
+                "type": "employee",
+                "staff": 1
+              },
+              {
+                "id": 26,
+                "name": "Michelle Harris",
+                "title": "Facilities Coordinator",
+                "salary": 50000,
+                "yearsExperience": 5,
+                "type": "employee",
+                "staff": 1
+              }
+            ]
+          },
+          {
+            "name": "IT Support",
+            "type": "subDepartment",
+            "staff": 2,
+            "children": [
+              {
+                "id": 27,
+                "name": "Brian Thompson",
+                "title": "IT Manager",
+                "salary": 85000,
+                "yearsExperience": 8,
+                "type": "employee",
+                "staff": 1
+              },
+              {
+                "id": 28,
+                "name": "Nicole Scott",
+                "title": "Help Desk Specialist",
+                "salary": 45000,
+                "yearsExperience": 3,
+                "type": "employee",
+                "staff": 1
+              }
+            ]
+          }
+        ]
+      }
+    ]
+}
