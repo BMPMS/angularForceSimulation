@@ -41,7 +41,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/first-app",
+            "outputPath": "dist/angularForceSimulation",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -79,10 +79,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "first-app:build:production"
+              "buildTarget": "angularForceSimulation:build:production"
             },
             "development": {
-              "buildTarget": "first-app:build:development"
+              "buildTarget": "angularForceSimulation:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -90,8 +90,11 @@
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n",
           "options": {
-            "buildTarget": "first-app:build"
+            "buildTarget": "angularForceSimulation:build"
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy"
         }
       }
     }
