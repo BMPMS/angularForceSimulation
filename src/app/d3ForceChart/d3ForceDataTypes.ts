@@ -26,3 +26,13 @@ export type ForceHierarchyLink = {
     source: ForceHierarchyNode<Company>;
     target: ForceHierarchyNode<Company>;
 }
+
+export type Props = {
+    defaultRadius: number;
+    radiusRange: [number, number];
+    links: {[key: string] : string | number};
+    nodes: {[key: string] : string | number};
+    label: {[key: string] : string | number};
+    icons: {[key: string] : string };
+
+}

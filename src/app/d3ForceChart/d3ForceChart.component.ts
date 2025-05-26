@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, Output, OnChanges,EventEmitter,ViewChild, SimpleChanges} from '@angular/core';
 import * as d3 from 'd3';
-import {Company, ForceHierarchyLink, ForceHierarchyNode} from "./d3ForceDataTypes";
+import {Company, ForceHierarchyLink, ForceHierarchyNode, Props} from "./d3ForceDataTypes";
 import {D3DragEvent} from "d3";
 
 @Component({
@@ -9,6 +9,15 @@ import {D3DragEvent} from "d3";
   template: `
     <div class="h-full">
       <div id="forceTooltip"></div>
+      <div id="legendDiv">
+        <svg class="legendSvg w-full h-full bg-transparent">
+            <circle class="legendCircleMax"></circle>
+            <circle class="legendCircleMin"></circle>
+            <text class="legendLabelMax"></text>
+            <text class="legendLabelMin"></text>
+            <text class="legendLabel"></text>
+        </svg>
+      </div>
       <svg class="baseSvg w-full h-full bg-white">
         <g class="chartSvg">
           <g class="linkGroup"></g>
@@ -29,12 +38,13 @@ export class D3ForceChartComponent implements OnChanges {
   radiusExtent: {[key: string]: [number, number]} | undefined = undefined;
 
   tooltipId: string = "forceTooltip";
-  props = {
+  props: Props = {
     defaultRadius: 12,
-    radiusRange: [12,60],
+    radiusRange: [12,40],
     links: {strokeWidth: 1, stroke:"#A0A0A0"},
     nodes: {rootColor: "#A0A0A0",strokeWidth: 0.5,stroke: "#484848"},
-    label: {fill:"#484848",fontSize:16}
+    label: {fill:"#484848",fontSize:16},
+    icons: {company: "\uf1ad", department:"\ue4da", subDepartment:"\uf0c0", employee:"\uf007"}
   }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -62,7 +72,7 @@ export class D3ForceChartComponent implements OnChanges {
 
             this.chartData.descendants()
                     .forEach((d) => {
-                        const lowerDescendants = d.descendants().filter((f) => f.depth > d.depth);
+                        d.descendants().filter((f) => f.depth > d.depth);
                         if(d.children){
                             if(d.depth >= 0){
                                 d._children = d.children; // hiding children using _children is standard d3 practice
@@ -102,8 +112,9 @@ export class D3ForceChartComponent implements OnChanges {
             let yWidth = yExtent1 - yExtent0;
             let translateX =  -(xExtent0 + xExtent1) / 2;
             let translateY =  -(yExtent0 + yExtent1) / 2;
+            const margin = 20;
 
-            const fitToScale = 0.8 / Math.max(xWidth / width, yWidth / height);
+            const fitToScale = 0.8 / Math.max(xWidth / (width - margin), yWidth / (height - margin));
 
             baseSvg
                 .interrupt()
@@ -119,6 +130,43 @@ export class D3ForceChartComponent implements OnChanges {
         }
     }
 
+    private drawLegend = (radiusScale:  d3.ScalePower<number, number, never>, radiusVar: string) => {
+
+        const legendSvg = d3.select<SVGSVGElement,unknown>(".legendSvg");
+        const legendWidth = 110;
+        const legendPadding = (legendWidth - (radiusScale.range()[1] * 2))/2;
+        const radiusDiff = radiusScale.range()[1] - radiusScale.range()[0];
+
+        legendSvg.select(".legendCircleMax")
+            .attr("r", radiusScale.range()[1])
+            .attr("fill","transparent")
+            .attr("stroke","#a0a0a0")
+            .attr("transform",`translate(${legendWidth/2},${legendWidth/2})`);
+
+        legendSvg.select(".legendCircleMin")
+            .attr("r", radiusScale.range()[0])
+            .attr("fill","transparent")
+            .attr("stroke","#a0a0a0")
+            .attr("transform",`translate(${legendWidth/2},${radiusDiff + legendWidth/2})`);
+
+        const valueFormat: string = radiusVar === "salary" ? "$.2s" : ",";
+
+        legendSvg.select(".legendLabelMax")
+            .attr("x", legendWidth/2)
+            .attr("y",legendPadding - 2)
+            .attr("fill","#808080")
+            .attr("text-anchor","middle")
+            .text(d3.format(valueFormat)(radiusScale.domain()[1]));
+
+        legendSvg.select(".legendLabelMin")
+            .attr("x", legendWidth/2)
+            .attr("y",legendPadding -14 + radiusDiff + radiusScale.range()[1])
+            .attr("fill","#808080")
+            .attr("text-anchor","middle")
+            .text(d3.format(valueFormat)(radiusScale.domain()[0]));
+
+
+    }
 
 
 
@@ -127,7 +175,7 @@ export class D3ForceChartComponent implements OnChanges {
     const baseSvg = d3.select<SVGSVGElement,unknown>(".baseSvg");
     const svgNode = baseSvg.node();
     if(svgNode){
-      const {tooltipId,props,radiusExtent, radiusVar} = this;
+      const {drawLegend,tooltipId,props,radiusExtent, radiusVar} = this;
       const {clientWidth, clientHeight} = svgNode;
       const width = clientWidth;
       const height = clientHeight;
@@ -163,6 +211,7 @@ export class D3ForceChartComponent implements OnChanges {
           .domain(radiusExtent?.[radiusVar] ?? [0, 0])
           .range(props.radiusRange);
 
+      drawLegend(radiusScale,radiusVar);
       const getColorSet = () => Array.from(
               chartNodes.descendants()
                   .reduce((acc, node) => {
@@ -172,7 +221,7 @@ export class D3ForceChartComponent implements OnChanges {
 
       // by default this is the label variable of the 1st level which is set to "defaultColor" - this can be changed
       let colorDomain = getColorSet();
-      const colorScale = d3.scaleOrdinal(d3.schemeCategory10).domain(colorDomain);
+      const colorScale = d3.scaleOrdinal(d3.schemeTableau10).domain(colorDomain);
 
       // select link + node group
       const linkGroup = svg.select(".linkGroup");
@@ -219,8 +268,8 @@ export class D3ForceChartComponent implements OnChanges {
 
         linksGroup
             .select(".linkLine")
-            .attr("stroke-width",props.links.strokeWidth)
-            .attr("stroke", props.links.stroke)
+            .attr("stroke-width",props.links["strokeWidth"])
+            .attr("stroke", props.links["stroke"])
             .attr("opacity",0)
             .interrupt()
             .transition()
@@ -236,6 +285,7 @@ export class D3ForceChartComponent implements OnChanges {
               enter.append("circle").attr("class", "nodeBackgroundCircle");
               enter.append("circle").attr("class", "nodeCircleOutline");
               enter.append("circle").attr("class", "nodeCircle");
+              enter.append("text").attr("class", "fa nodeCircleIcon");
               enter.append("rect").attr("class","nodeLabelBackground")
               enter.append("text").attr("class", "nodeLabel");
               enter.append("g").attr("class","nodePieGroup");
@@ -259,7 +309,7 @@ export class D3ForceChartComponent implements OnChanges {
                     .style("top", `${event.y}px`)
                     .html(tooltipText);
             })
-            .on("mouseout",(event,d) => {
+            .on("mouseout",() => {
                 d3.select(`#${tooltipId}`)
                     .style("visibility", "hidden");
 
@@ -291,8 +341,8 @@ export class D3ForceChartComponent implements OnChanges {
         nodesGroup
             .select(".nodeCircle")
             .attr("r", (d) => radiusScale(d.data[radiusVar]))
-            .attr("fill", (d) => d.depth === 0 ? props.nodes.rootColor : colorScale(d.data.type))
-            .attr("stroke", props.nodes.stroke)
+            .attr("fill", (d) => colorScale(d.data.type))
+            .attr("stroke", props.nodes["stroke"])
             .attr("stroke-width", 0)
             .interrupt()
             .attr("opacity",0)
@@ -300,20 +350,34 @@ export class D3ForceChartComponent implements OnChanges {
             .duration((d) => d.expanded ? 500 : 0)
             .attr("opacity",1); // transition only applies to recently expanded nodes
 
-        nodesGroup // dashed circle
+       nodesGroup
+          .select(".nodeCircleIcon")
+          .attr("font-size", (d) => radiusScale(d.data[radiusVar]))
+           .attr("text-anchor","middle")
+           .style("dominant-baseline","middle")
+           .attr("fill", "white")
+           .text((d) => props.icons[d.data.type] || "")
+          .attr("stroke-width", 0)
+          .interrupt()
+          .attr("opacity",0)
+          .transition()
+          .duration((d) => d.expanded ? 500 : 0)
+          .attr("opacity",1); // transition only applies to recently expanded nodes
+
+          nodesGroup // dashed circle
             .select(".nodeCircleOutline")
             .attr("pointer-events","none")
             .attr("r",(d) =>  radiusScale(d.data[radiusVar]) + 3)
-            .attr("stroke", (d) => d.depth === 0 ? props.nodes.rootColor : colorScale(d.data.type))
+            .attr("stroke", (d) => d.depth === 0 ? props.nodes["rootColor"] : colorScale(d.data.type))
             .attr("fill", "none")
             .attr("stroke-dasharray", "2,1")
             .attr("stroke-width", (d) => d.children || d._children ? 1 : 0)
 
         nodesGroup // rectangle behind label to make it more readable above links
             .select(".nodeLabelBackground")
-            .attr("width", (d) => this.measureWidth(d.data.name,props.label.fontSize) + 2)
-            .attr("height", props.label.fontSize)
-            .attr("x",(d) => -this.measureWidth(d.data.name,props.label.fontSize)/2 - 1)
+            .attr("width", (d) => this.measureWidth(d.data.name,+props.label["fontSize"]) + 2)
+            .attr("height", props.label["fontSize"])
+            .attr("x",(d) => -this.measureWidth(d.data.name,+props.label["fontSize"])/2 - 1)
             .attr("y",(d) =>  radiusScale(d.data[radiusVar]) + 1.5 + (d.children || d._children ? 3 : 0))
             .attr("rx",3)
             .attr("ry",3)
@@ -321,10 +385,10 @@ export class D3ForceChartComponent implements OnChanges {
 
         nodesGroup
             .select(".nodeLabel")
-            .attr("fill", props.label.fill)
-            .attr("font-size",props.label.fontSize)
+            .attr("fill", props.label["fill"])
+            .attr("font-size",props.label["fontSize"])
             .attr("dx", 0)
-            .attr("dy", (d) => props.label.fontSize + radiusScale(d.data[radiusVar]) + (d.children || d._children ? 3 : 0))
+            .attr("dy", (d) => +props.label["fontSize"] + radiusScale(d.data[radiusVar]) + (d.children || d._children ? 3 : 0))
             .attr("text-anchor", "middle")
             .text((d) =>d.data.name)
             .attr("opacity",0)
